@@ -1,0 +1,29 @@
+<h3>new Transaction</h3>>
+
+<form [formGroup]="TransactionForm" (ngSubmit)="sendTransaction()">
+
+  <div class="form-group">
+      <label for="author">author</label>
+    <input type="text" name="author" id="author" formControlName="author" class="form-control" placeholder="author giriniz">
+    <div class="alert alert-danger" *ngIf="TransactionForm.get('author').hasError('required') && TransactionForm.get('author').dirty">Zorunlu</div>
+  </div>
+
+  <div class="form-group">
+    <label for="content">transaction</label>
+  <input type="text" name="content" id="content" formControlName="content" class="form-control" placeholder="author giriniz">
+  <div class="alert alert-danger" *ngIf="TransactionForm.get('content').hasError('required') && TransactionForm.get('content').dirty">Zorunlu</div>
+</div>
+
+
+          <button type="submit" class="btn btn-success" > gönder </button>
+</form>
+
+<br>
+
+<div class="row"  *ngIf="showMsg">
+  <div class="col-xs-12">
+    <p class="alert alert-success">
+        <strong>Transaction başarılı bir şekilde gönderildi.</strong>
+    </p>
+  </div>
+</div>

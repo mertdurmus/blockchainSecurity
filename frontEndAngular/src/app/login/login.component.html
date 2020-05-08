@@ -1,0 +1,13 @@
+
+        <h1>Giriş yap !</h1>
+
+        User name : <input type="text" name="username" [(ngModel)]="username">
+        <!-- [(ngModel)] Bu ifade type script tarafında ki username değişkiniyle eşleş demek
+        Yani burada inputdan almış olduğumuz username değerini login.component.ts tarafındaki username ile eşleştiriyoruz
+         -->
+
+        Password  : <input type="password" name="password" [(ngModel)]="passwd">
+
+        
+        .         
+        <button (click)=login() class="btn btn-outline-primary">Giriş Yap</button>

@@ -12,6 +12,7 @@ import { BlockService } from './services/block.service';
 import { MiningComponent } from './mining/mining.component';
 import { UserService } from './services/user.service';
 import { LoginComponent } from './login/login.component';
+import { MainmenuComponent } from './mainmenu/mainmenu.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { LoginComponent } from './login/login.component';
     RegisterComponent,
     NewTransactionComponent,
     MiningComponent,
-    LoginComponent
+    LoginComponent,
+    MainmenuComponent
   ],
   imports: [
     BrowserModule,

@@ -3,6 +3,7 @@ import { UserService } from '../services/user.service';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { user } from '../models/user';
 import { Router } from '@angular/router';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 
 
@@ -15,6 +16,10 @@ export class RegisterComponent implements OnInit {
 
   User: user;
   registerForm: FormGroup;
+  showMsg;
+  showMsglogin;
+
+
   constructor(private service: UserService, private formBuilder: FormBuilder, private router: Router ) { }
 
   createForm() {
@@ -33,7 +38,9 @@ export class RegisterComponent implements OnInit {
     this.service.register(this.User).subscribe(
       data => {
         this.createForm();
-        // setTimeout(() => {this.showMsg = false; this.router.navigate(['get']); }, 2500);
+        this.showMsg = true;
+        // setTimeout(() => {this.showMsg = false; }, 2500);
+        setTimeout(() => {this.showMsg = false; this.router.navigate(['login']); }, 2500);
       },
       error => console.log(error));
   }
@@ -44,6 +51,11 @@ export class RegisterComponent implements OnInit {
 
   ngOnInit() {
     this.createForm();
+    if (this.service.isUserLoggedIn()) {
+      this.showMsglogin = true;
+      setTimeout(() => {this.showMsg = false; this.router.navigate(['main']); }, 3500);
+    }
+
   }
 
 }

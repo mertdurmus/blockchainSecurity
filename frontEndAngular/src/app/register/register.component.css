@@ -26,3 +26,10 @@
     background: #0062cc;
     color: #fff;
 }
+
+.monospace {
+    font-family: "Lucida Console", Courier, monospace;
+    text-align: center;
+    position:center;
+  }
+

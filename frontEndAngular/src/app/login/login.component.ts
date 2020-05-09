@@ -14,6 +14,9 @@ export class LoginComponent implements OnInit {
   username = '';
   passwd = '';
   loginForm: FormGroup;
+  showMsg;
+
+
   constructor(private service: UserService, private formBuilder: FormBuilder, private router: Router) { }
 
 
@@ -29,8 +32,8 @@ export class LoginComponent implements OnInit {
   login() {
     this.service.login(this.username, this.passwd).subscribe(
       data => {
-        console.log('xxx');
-        this.router.navigateByUrl('/chain')
+         this.showMsg = true;
+         setTimeout(() => {this.showMsg = false; this.router.navigate(['chain']); }, 2500);
       },
       error => {
         console.log(error);

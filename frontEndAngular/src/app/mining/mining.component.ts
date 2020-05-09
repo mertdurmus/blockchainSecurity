@@ -16,7 +16,7 @@ export class MiningComponent implements OnInit {
     this.service.getMine().subscribe(data => {
       this.msg = data;
     });
-    // console.log(this.blocks)
+    // this.msg = this.service.mesaj;
   }
   }
 

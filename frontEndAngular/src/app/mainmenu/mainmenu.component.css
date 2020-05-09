@@ -1,0 +1,12 @@
+div{
+    height: 400px;
+    width: 800px;
+    background: rgb(0, 225, 255);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+  }
+  html,body,h1,h2,h3,h4,h5,h6 {
+    font-family: "Comic Sans MS", cursive, sans-serif;
+  }

@@ -1,7 +1,9 @@
 
 
-<form [formGroup]="registerForm" (ngSubmit)="sendUser()">
+<form [formGroup]="registerForm" (ngSubmit)="sendUser()" *ngIf="!showMsglogin">
+  <h4  class="monospace"  *ngIf="!showMsglogin" >REGISTER FORM</h4>
           <div class="row">
+
               <div class="col-md-6">
                   <div class="form-group">
                       <input type="text" class="form-control" formControlName="name" placeholder="Your Name *">
@@ -24,10 +26,28 @@
                     <input type="text" class="form-control" formControlName="passwd" placeholder="password *" >
                 </div>
 
-          <button type="submit" class="btnSubmit">Submit</button>
+          <button type="submit" class="btnSubmit">REGISTER</button>
       </div>
   </div>
 </form>
+<br>
+<br>
+<div  class="monospace">
+<h4  *ngIf="!showMsglogin">If you have an account please log in </h4>
+<button  type="button" class="btn btn-success btn-sm" (click)="btnClick();" *ngIf="!showMsglogin">LOGIN</button> 
+</div>
+<div class="row"  *ngIf="showMsg">
+    <div class="col-xs-12">
+      <p class="alert alert-success monospace">
+          <strong>user account has created succesfully</strong>
+      </p>
+    </div>
+  </div>
 
-<h3>Hesabınız var mı Giris yapin</h3>
-<button type="button" class="btn btn-primary" (click)="btnClick();"> giris yap</button> 
+  <div class="row"  *ngIf="showMsglogin">
+    <div class="col-xs-12">
+      <p class="alert alert-success monospace">
+          <strong>user active</strong>
+      </p>
+    </div>
+  </div>

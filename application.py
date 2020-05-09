@@ -7,6 +7,8 @@ import sys
 #print(sys.path)
 #from flask_cors import CORS, cross_origin
 import json
+import jwt
+import datetime
 
 class Block:
     def __init__(self, index, transactions, timestamp, previous_hash, nonce=0):
@@ -109,10 +111,47 @@ class Blockchain:
 
         return True
 
+def token_required(token):
+    
+    invalid_msg = {
+        'message': 'Invalid token. Registeration and / or authentication required',
+        'authenticated': False
+    }
+    expired_msg = {
+        'message': 'Expired token. Reauthentication required.',
+        'authenticated': False
+       }
 
+    try:
+        
+        data = decode_auth_token(token)
+        if str(data)=="Signature expired. Please log in again.":
+            return jsonify(expired_msg)
+        elif str(data)=="Invalid token. Please log in again.":
+            return jsonify(invalid_msg)
+        else:    
+            return True
+
+    except:
+        print('')
+        return  jsonify('false')
+
+ 
+    
+def decode_auth_token(auth_token):
+
+    try:
+        payload = jwt.decode(auth_token, app.config.get('SECRET_KEY'))
+        return payload['sub']
+    except jwt.ExpiredSignatureError:
+        return 'Signature expired. Please log in again.'
+    except jwt.InvalidTokenError:
+        return 'Invalid token. Please log in again.'
+    
+    
 app = Flask(__name__)
 #cors = CORS(app, resources={r"/api/*": {"origins": "*"}}, methods=['GET', 'POST', 'DELETE', 'PUT'])
-
+app.config['SECRET_KEY'] = 'xxx'
 blockchain = Blockchain()
 blockchain.create_genesis_block()
 
@@ -159,17 +198,27 @@ def get_chain_1():
 
 @app.route('/mine', methods=['GET'])
 def mine_unconfirmed_transactions():
-    result = blockchain.mine()
-    if not result:
-        return jsonify("No transactions to mine")
+    
+    auth_headers = request.headers.get('Authorization', '')#.split()
+    msg=token_required(auth_headers)
+    print(auth_headers)
+    
+    if msg==True:
+        
+        result = blockchain.mine()
+        if not result:
+            return jsonify("No transactions to mine")
+        else:
+            # Making sure we have the longest chain before announcing to the network
+            chain_length = len(blockchain.chain)
+            consensus()
+            if chain_length == len(blockchain.chain):
+                # announce the recently mined block to the network
+                announce_new_block(blockchain.last_block)
+                return jsonify("block {} succesfully mined (connected to chain)".format(blockchain.last_block.index))
     else:
-        # Making sure we have the longest chain before announcing to the network
-        chain_length = len(blockchain.chain)
-        consensus()
-        if chain_length == len(blockchain.chain):
-            # announce the recently mined block to the network
-            announce_new_block(blockchain.last_block)
-        return jsonify("block {} başarılı şekilde mine edildi (bağlandı)".format(blockchain.last_block.index))
+        return msg;
+    
 
 
 # endpoint to add new peers to the network.

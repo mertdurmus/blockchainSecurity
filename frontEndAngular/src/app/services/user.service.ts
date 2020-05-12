@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { user } from '../models/user';
 import { Observable, throwError } from 'rxjs';
-import {map, tap, catchError } from 'rxjs/operators'
+import {map, tap, catchError } from 'rxjs/operators';
 
 
 export const TOKEN = 'token';

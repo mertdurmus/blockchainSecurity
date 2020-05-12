@@ -173,15 +173,22 @@ def login():
 
 
 
-@app.route("/test",methods=['POST'])
-def test():
-    auth_headers = request.headers.get('Authorization', '')#.split()
-    print(auth_headers)
-    msg=token_required(auth_headers)
-    if msg==True:
-        return jsonify('mdklm')
-    else:
-        return msg;
+@app.route("/userIp",methods=['POST'])
+def userIp():
+    tx_data = request.json
+    print(tx_data)
+    required_fields = ["username", "ip"]           
+    db = MySQLdb.connect(host="localhost",  user="root",passwd="toor",db="blockchainUser")  
+    cur = db.cursor()
+    username=tx_data.get("username")
+    ipAddress=tx_data.get("ipAddress")
+    sql = "INSERT INTO ipTable (username, ipAddress) VALUES(%s,%s)"    
+    val=(format(str(tx_data['username'])),format(str(tx_data['ipAddress'])) )
+    cur.execute(sql,val)
+    db.commit()
+    print(cur.rowcount, "record inserted.")
+    return json.dumps("success")
+
     
 
 

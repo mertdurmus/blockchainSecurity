@@ -13,6 +13,7 @@ import { MiningComponent } from './mining/mining.component';
 import { UserService } from './services/user.service';
 import { LoginComponent } from './login/login.component';
 import { MainmenuComponent } from './mainmenu/mainmenu.component';
+import { IpServiceService } from './services/ip-service.service';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,7 @@ import { MainmenuComponent } from './mainmenu/mainmenu.component';
     FormsModule,
     ReactiveFormsModule
   ],
-  providers: [BlockService, UserService],
+  providers: [BlockService, UserService, IpServiceService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

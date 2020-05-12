@@ -4,6 +4,8 @@ import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { user } from '../models/user';
 import { Router } from '@angular/router';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
+import { IpServiceService } from '../services/ip-service.service';
+import { HttpClient } from '@angular/common/http';
 
 
 
@@ -18,9 +20,14 @@ export class RegisterComponent implements OnInit {
   registerForm: FormGroup;
   showMsg;
   showMsglogin;
+  username1: string;
+  ipAddress: any;
+  privateIP;
 
 
-  constructor(private service: UserService, private formBuilder: FormBuilder, private router: Router ) { }
+
+  // tslint:disable-next-line:max-line-length
+  constructor(private service: UserService, private formBuilder: FormBuilder, private router: Router, private ipService: IpServiceService, private http: HttpClient ) { }
 
   createForm() {
 
@@ -33,7 +40,7 @@ export class RegisterComponent implements OnInit {
       passwd: ['', Validators.required]
     });
   }
-  sendUser() {
+  async sendUser() {
     this.User = Object.assign({}, this.registerForm.value);
     this.service.register(this.User).subscribe(
       data => {
@@ -43,13 +50,21 @@ export class RegisterComponent implements OnInit {
         setTimeout(() => {this.showMsg = false; this.router.navigate(['login']); }, 2500);
       },
       error => console.log(error));
+    this.username1 = this.User.username;
+    this.getIP();
+    await this.delay(3000);
+    console.log(this.ipAddress);
+    this.ipService.setİpAdress(this.username1, this.ipAddress).subscribe((res: any) =>  {
+      console.log(JSON.stringify(res));
+    });
   }
 
-  btnClick () {
+  btnClick() {
     this.router.navigateByUrl('/login');
 };
 
   ngOnInit() {
+
     this.createForm();
     if (this.service.isUserLoggedIn()) {
       this.showMsglogin = true;
@@ -58,5 +73,17 @@ export class RegisterComponent implements OnInit {
 
   }
 
+  delay(ms: number) {
+    return new Promise( resolve => setTimeout(resolve, ms) );
+}
+
+  getIP() {
+
+    this.ipService.getIPAddress().subscribe((res: any) =>  {
+      this.ipAddress = res.ip;
+      console.log(res.ip);
+      console.log(JSON.stringify(res));
+    });
+  }
 }
 

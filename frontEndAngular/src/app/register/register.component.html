@@ -38,15 +38,15 @@
 </div>
 <div class="row"  *ngIf="showMsg">
     <div class="col-xs-12">
-      <p class="alert alert-success monospace">
-          <strong>user account has created succesfully</strong>
+      <p class="alert alert-warning monospace" role="alert">
+          <strong>{{mesaj}}</strong>
       </p>
     </div>
   </div>
 
   <div class="row"  *ngIf="showMsglogin">
     <div class="col-xs-12">
-      <p class="alert alert-success monospace">
+      <p class="alert alert-warning monospace" role="alert">
           <strong>user active</strong>
       </p>
     </div>

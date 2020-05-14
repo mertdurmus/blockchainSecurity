@@ -20,7 +20,10 @@ from functools import wraps
 import hashlib, binascii, os
 
 
-
+def to_dict(self):
+    rv = dict(self.payload or ())
+    rv['message'] = self.message
+    return rv
 
 def token_required(token):
     
@@ -100,37 +103,62 @@ app.config['SECRET_KEY'] = 'xxx'
 
 @app.route("/userSave",methods=['POST'])
 def setUsers():
+    try:
+        tx_data = request.json
+        required_fields = ["name", "surname","phone", "tc","username", "passwd"]
     
-    tx_data = request.json
-    required_fields = ["name", "surname","phone", "tc","username", "passwd"]
-
-            
-    db = MySQLdb.connect(host="localhost",  # your host 
-                         user="root",       # username
-                         passwd="toor",     # password
-                         db="blockchainUser")   # name of the database
-
-    # Create a Cursor object to execute queries.
-    cur = db.cursor()
-    print(tx_data['name'])
-    # Select data from table using SQL query.
-    name=tx_data.get("name")
-    surname=tx_data.get("surname")
-    phone=tx_data.get("phone")
-    tc=tx_data.get("tc")
-    username=tx_data.get("username")
-    passwd=tx_data.get("passwd")
-    print(passwd)
-    sql = "INSERT INTO blockchainUserTable (name, surname, phone, tc, username, passwd) VALUES(%s,%s,%s,%s,%s,%s)"
-    #val=(name,surname,phone,tc,username,passwd,)
-    #val=(format(str(name)),format(str(surname)),format(str(phone)),format(str(tc)),format(str(username)),format(str(passwd)),)
-    val=(format(str(tx_data['name'])),format(str(tx_data['surname'])),format(str(tx_data['phone'])),format(str(tx_data['tc'])),format(str(tx_data['username'])),format(str(hash_password(tx_data['passwd']))) )
-    #cur.execute("INSERT INTO blockchainUserTable (name, surname, phone, tc, username, passwd) VALUES(½s,½s,%s,%s,%s,%s)",(name,surname,phone,tc,username,passwd,))
-    cur.execute(sql,val)
-    db.commit()
-    print(cur.rowcount, "record inserted.")
-
-    return json.dumps("success")
+                
+        db = MySQLdb.connect(host="localhost",  # your host 
+                             user="root",       # username
+                             passwd="toor",     # password
+                             db="blockchainUser")   # name of the database
+    
+        # Create a Cursor object to execute queries.
+        cur = db.cursor()
+        print(tx_data['name'])
+        # Select data from table using SQL query.
+        name=tx_data.get("name")
+        surname=tx_data.get("surname")
+        phone=tx_data.get("phone")
+        tc=tx_data.get("tc")
+        username=tx_data.get("username")
+        passwd=tx_data.get("passwd")
+        print(passwd)
+        sql = "INSERT INTO blockchainUserTable (name, surname, phone, tc, username, passwd) VALUES(%s,%s,%s,%s,%s,%s)"
+        #val=(name,surname,phone,tc,username,passwd,)
+        #val=(format(str(name)),format(str(surname)),format(str(phone)),format(str(tc)),format(str(username)),format(str(passwd)),)
+        val=(format(str(tx_data['name'])),format(str(tx_data['surname'])),format(str(tx_data['phone'])),format(str(tx_data['tc'])),format(str(tx_data['username'])),format(str(hash_password(tx_data['passwd']))) )
+        #cur.execute("INSERT INTO blockchainUserTable (name, surname, phone, tc, username, passwd) VALUES(½s,½s,%s,%s,%s,%s)",(name,surname,phone,tc,username,passwd,))
+        cur.execute(sql,val)
+        db.commit()
+        print(cur.rowcount, "record inserted.")
+    
+        return json.dumps("successfully registered user")
+    except (MySQLdb.Error, MySQLdb.Warning) as e:
+        try:      
+            print("exceptinosssss")
+            print(e)
+            error=str(e)
+            response = jsonify(error)
+            response.status_code = 200
+            return response
+        except IndexError:
+            error=str(e)
+            response = jsonify(error)
+            return response
+    except TypeError as e:
+        print(e)
+        error=str(e)
+        response = jsonify(error)
+        return response
+    except ValueError as e:
+        print(e)
+        error=str(e)
+        response = jsonify(error)
+        return response
+    finally:
+        cur.close()
+        db.close()
 
 
 x=""
@@ -175,20 +203,45 @@ def login():
 
 @app.route("/userIp",methods=['POST'])
 def userIp():
-    tx_data = request.json
-    print(tx_data)
-    required_fields = ["username", "ip"]           
-    db = MySQLdb.connect(host="localhost",  user="root",passwd="toor",db="blockchainUser")  
-    cur = db.cursor()
-    username=tx_data.get("username")
-    ipAddress=tx_data.get("ipAddress")
-    sql = "INSERT INTO ipTable (username, ipAddress) VALUES(%s,%s)"    
-    val=(format(str(tx_data['username'])),format(str(tx_data['ipAddress'])) )
-    cur.execute(sql,val)
-    db.commit()
-    print(cur.rowcount, "record inserted.")
-    return json.dumps("success")
-
+    try:
+        tx_data = request.json
+        print(tx_data)
+        required_fields = ["username", "ip"]           
+        db = MySQLdb.connect(host="localhost",  user="root",passwd="toor",db="blockchainUser")  
+        cur = db.cursor()
+        username=tx_data.get("username")
+        ipAddress=tx_data.get("ipAddress")
+        sql = "INSERT INTO ipTable (username, ipAddress) VALUES(%s,%s)"    
+        val=(format(str(tx_data['username'])),format(str(tx_data['ipAddress'])) )
+        cur.execute(sql,val)
+        db.commit()
+        print(cur.rowcount, "record inserted.")
+        return json.dumps("success")
+    except (MySQLdb.Error, MySQLdb.Warning) as e:
+        try:
+            print("exceptinosssss")
+            print(e)
+            error=str(e)
+            response = jsonify(error)
+            response.status_code = 200
+            return response
+        except IndexError:
+            error=str(e)
+            response = jsonify(error)
+            return response
+    except TypeError as e:
+        print(e)
+        error=str(e)
+        response = jsonify(error)
+        return response
+    except ValueError as e:
+        print(e)
+        error=str(e)
+        response = jsonify(error)
+        return response
+    finally:
+        cur.close()
+        db.close()
     
 
 

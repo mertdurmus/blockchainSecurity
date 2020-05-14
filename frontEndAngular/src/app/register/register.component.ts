@@ -23,6 +23,7 @@ export class RegisterComponent implements OnInit {
   username1: string;
   ipAddress: any;
   privateIP;
+  mesaj;
 
 
 
@@ -46,8 +47,9 @@ export class RegisterComponent implements OnInit {
       data => {
         this.createForm();
         this.showMsg = true;
+        this.mesaj = data;
         // setTimeout(() => {this.showMsg = false; }, 2500);
-        setTimeout(() => {this.showMsg = false; this.router.navigate(['login']); }, 2500);
+        setTimeout(() => {this.showMsg = false; }, 4000);
       },
       error => console.log(error));
     this.username1 = this.User.username;
